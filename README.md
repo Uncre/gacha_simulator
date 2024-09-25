@@ -1,7 +1,7 @@
 # gacha_simulator
 A gacha simulator.
 
-#　やること
+# やること
 
 ・web ui 実装
 
