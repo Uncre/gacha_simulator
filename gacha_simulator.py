@@ -51,7 +51,10 @@ def gacha_process(rand_num, is_special):
 def gacha_once():
     rand_gacha = random.randint(1, 10000)
 
-    return gacha_process(rand_gacha, False)
+    gacha_result = gacha_process(rand_gacha, False)
+    print(gacha_result)
+
+    return gacha_result
 
 # 10回ひく（☆2確定処理あり）
 def gacha_ten_time():
@@ -65,9 +68,35 @@ def gacha_ten_time():
         else:
             is_special = True
 
-        result = gacha_process(rand_gacha, is_special)
-        result_list.append(result)
+        gacha_result = gacha_process(rand_gacha, is_special)
+        result_list.append(gacha_result)
+
+    print(result_list)
 
     return result_list
 
-print(gacha_ten_time())
+# 特定のキャラがひけるまでガチャを回す
+def gacha_chara(chara_name: str):
+
+    gacha_count = 0
+    # ナツ→チナツみたいな事例を回避
+    chara_name = "'" + chara_name + "'"
+
+    while True:
+
+        gacha_result = gacha_ten_time()
+
+        gacha_count += 10
+        print(gacha_count)
+        print()
+
+        # キャラ名が含まれていたら終了
+        if chara_name in str(gacha_result):
+            break
+        
+        # 50000回回したらとりあえず終了
+        if gacha_count >= 50000:
+            return "Error: gacha_count is over 50000", gacha_count
+
+    return gacha_result, gacha_count
+        
