@@ -3,7 +3,7 @@ import random
 
 # ガチャデータの読み込み
 # "https://bluearchive.wikiru.jp/?:config/plugin/gachasimulator/table/240925_黒君は遠き慮り有りて" のデータを利用
-wb = openpyxl.load_workbook("gacha_simulator\gacha_simu_data.xlsx")
+wb = openpyxl.load_workbook("gacha_simu_data.xlsx")
 
 def gacha_process(rand_num, is_special):
 
