@@ -1,11 +1,11 @@
 import gradio as gr
 import gacha_simulator as gsimu
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 
 app = FastAPI()
 
-@app.get("/gacha")
-async def gr_webui():
+def create_gradio_interface():
     with gr.Blocks() as demo:
 
         # ガチャを（普通に）ひく
@@ -23,7 +23,7 @@ async def gr_webui():
             # ボタン押下のイベントリスナー
             gacha_btn.click(fn=gsimu.gacha_once, outputs=output)
             gacha_btn_ten.click(fn=gsimu.gacha_ten_time, outputs=output)
-
+        
         #特定のキャラがひけるまでガチャを回す
         with gr.Column():
             gr.Markdown("# キャラをひく")
@@ -47,11 +47,22 @@ async def gr_webui():
                     output_chara_count
                 ]
             )
+    
+    return demo
 
-    global app
-    demo.queue()
-    demo.startup_events()
-    app = gr.mount_gradio_app(app, demo, "/")
+# Gradioインターフェースの作成
+demo = create_gradio_interface()
+demo.queue()
 
+# FastAPIアプリにGradioインターフェースをマウント
+gradio_app = gr.mount_gradio_app(app, demo, path="/gacha")
+
+# ルートパスにアクセスしたときに/gachaにリダイレクト
+@app.get("/")
+async def root():
+    return RedirectResponse('/gacha')
+
+# /gachaパスへのアクセスをGradioアプリにハンドオーバー
+app.mount("/gacha", gradio_app)
 
 # uvicorn webui:app --host 0.0.0.0
